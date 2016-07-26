@@ -1,7 +1,12 @@
 package com.solutions.datastructures.queues;
 
+import java.util.Arrays;
+
 /**
  * Created by chch0316 on 7/25/2016.
+ */
+/*
+ Queue (FIFO) implmentation- using circular Array
  */
 public class ArrayQueue<T> implements Queue {
 
@@ -17,7 +22,7 @@ public class ArrayQueue<T> implements Queue {
     public ArrayQueue(int capacity){
         this.capacity = capacity;
         items = (T[])new Object[capacity];
-        front=rear=-1;
+        front=rear=0;
         size=0;
     }
 
@@ -34,7 +39,7 @@ public class ArrayQueue<T> implements Queue {
             items = newItems;
             capacity = 2*capacity;
         }
-        items[++rear%capacity] = (T)newItem;
+        items[rear++%capacity] = (T)newItem;
         ++size;
     }
 
@@ -44,7 +49,7 @@ public class ArrayQueue<T> implements Queue {
     }
 
     @Override
-    public Object deQueue() {
+    public Object deQueue() throws QueueException {
         if(!isEmpty()){
             size--;
             return items[front++%capacity];
@@ -55,8 +60,11 @@ public class ArrayQueue<T> implements Queue {
     }
 
     @Override
-    public Object peek() {
-        return items[front++%capacity];
+    public Object peek() throws QueueException{
+        if(!isEmpty())
+            return items[front++%capacity];
+        else
+            return new QueueException("Queue: Trying to get value from empty Queue.");
     }
 
     @Override

@@ -7,8 +7,8 @@ public interface Queue<T> {
 
     void enQueue(T newItem);
     boolean isEmpty();
-    T deQueue();
+    T deQueue() throws QueueException;
     String toString();
-    T peek();
+    T peek() throws QueueException;
     int size();
 }
