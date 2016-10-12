@@ -1,145 +1,138 @@
 package com.solutions.datastructures.graphs;
 
-import com.solutions.datastructures.queues.*;
-import sun.awt.image.ImageWatched;
+import com.solutions.datastructures.lists.*;
 
 import java.util.*;
-import java.util.Queue;
+import java.util.List;
 
 /**
- * Created by chch0316 on 8/27/2016.
+ * Created by chch0316 on 10/12/2016.
  */
-class Vertex{
-    Vertex next;
-    Integer vertexNo;
-    Integer weight;
-    Vertex(int vertexNo, int weight){
-        this.vertexNo = vertexNo;
-        this.weight = weight;
-        next=null;
-    }
-}
-public class GraphAdjacencyList {
-    int noOfVertices;
-    HashMap<Integer,LinkedList<Vertex>> edjList ;
+public class GraphAdjacencyList implements Graph {
 
-    GraphAdjacencyList(int noOfVertices){
-        this.noOfVertices = noOfVertices;
-        edjList = new HashMap<Integer, LinkedList<Vertex>>();
+    private boolean isDirected;
+    private Integer noOfVertices;
+    private Integer noOfEdges;
+    HashMap<Integer,LinkedList<Vertex>> adjList;
 
-        for (int i = 1; i <= noOfVertices ; i++) {
-            edjList.put(i,new LinkedList<Vertex>());
+    class Vertex {
+        Integer vertexNo;
+        Integer edgeWeight;
+        Vertex(Integer vertexNo){
+            this.vertexNo = vertexNo;
+        }
+        Vertex(Integer vertexNo,Integer edgeWeight){
+            this(vertexNo);
+            this.edgeWeight = edgeWeight;
         }
     }
 
-    void addEdge(int source,int dest,int weight){
-        if(edjList.get(source)==null|| edjList.get(dest)==null)
+    GraphAdjacencyList(){
+        adjList = new HashMap<Integer, LinkedList<Vertex>>();
+        noOfEdges =0;
+    }
+
+    GraphAdjacencyList(Integer noOfVertices,boolean isDirected){
+        this();
+        this.noOfVertices = noOfVertices;
+        this.isDirected = isDirected;
+
+        for (int i = 0; i < noOfVertices ; i++) {
+            adjList.put(i,new LinkedList<Vertex>());
+        }
+    }
+
+    @Override
+    public boolean isDirected() {
+        return isDirected;
+    }
+
+    @Override
+    public Integer noOfVertices() {
+        return noOfVertices;
+    }
+
+    @Override
+    public Integer noOfEdges() {
+        return noOfEdges;
+    }
+
+    @Override
+    public void addVertex(Integer vertexNo) {
+        if(adjList.get(vertexNo)!=null)
             return;
-        Vertex x= new Vertex(dest, weight);
-        edjList.get(source).add(x);
-
-        Vertex y= new Vertex(source, weight);
-        edjList.get(dest).add(y);
+        adjList.put(vertexNo,new LinkedList<Vertex>());
+        ++noOfVertices;
     }
 
-    void addVertex(int vertex){
-        if(edjList.get(vertex)!=null)
+    @Override
+    public void addEdge(Integer source, Integer dest) {
+        if(adjList.get(source)==null || adjList.get(dest)==null)
             return;
-        noOfVertices++;
-        edjList.put(vertex,new LinkedList<Vertex>());
+        ++noOfEdges;
+        adjList.get(source).add(new Vertex(dest));
+        if(!isDirected){
+            adjList.get(dest).add(new Vertex(source));
+            ++noOfEdges;
+        }
     }
 
-    List<Vertex> getAdjacentVertices(int source){
-        return edjList.get(source);
+    @Override
+    public void addEdge(Integer source, Integer dest, Integer weight) {
+        if(adjList.get(source)==null || adjList.get(dest)==null)
+            return;
+        ++noOfEdges;
+        adjList.get(source).add(new Vertex(dest,weight));
+        if(!isDirected){
+            adjList.get(dest).add(new Vertex(source,weight));
+            ++noOfEdges;
+        }
     }
 
-    boolean areConnected(int source, int dest){
-        List<Vertex> list = edjList.get(source);
+    @Override
+    public Iterator getVertices() {
+        return adjList.keySet().iterator();
+    }
+
+    @Override
+    public void display() {
+       Set <Map.Entry<Integer,LinkedList<Vertex>>> entrySet = adjList.entrySet();
+        for (Map.Entry<Integer,LinkedList<Vertex>> entry : entrySet ) {
+            System.out.print(entry.getKey()+" : ");
+            Iterator<Vertex> itr = entry.getValue().iterator();
+            while (itr.hasNext()){
+                Vertex temp = itr.next();
+                System.out.print("("+temp.vertexNo+","+temp.edgeWeight+")->");
+            }
+            System.out.println();
+        }
+    }
+
+    @Override
+    public boolean areConnected(Integer source, Integer dest) {
+        List<Vertex> list;
+        Integer key;
+        if(adjList.get(source).size() > adjList.get(dest).size()) {
+            list = adjList.get(dest);
+            key = source;
+        }
+        else {
+            list = adjList.get(source);
+            key= dest;
+        }
+
         Iterator<Vertex> itr = list.iterator();
         while (itr.hasNext()){
-            if(itr.next().vertexNo == dest)
+            Vertex temp = itr.next();
+            if(temp.vertexNo == key){
                 return true;
+            }
         }
         return false;
     }
 
-    void displayGraph(){
-        Set<Map.Entry<Integer,LinkedList<Vertex>>> set= edjList.entrySet();
-        for (Map.Entry<Integer,LinkedList<Vertex>> entry: set) {
-            int vertex =entry.getKey();
-            LinkedList list = entry.getValue();
-            Iterator<Vertex> itr = list.iterator();
-            System.out.println("Vertext No: "+ vertex);
-            while (itr.hasNext()){
-                Vertex x= itr.next();
-                System.out.print("("+x.vertexNo+" , "+x.weight+" ) -> ");
-            }
-            System.out.println(" Null");
-        }
+    @Override
+    public List getConnectedVertices(Integer source) {
+        return adjList.get(source);
     }
-
-    void breadthFirstTraversal(){
-       boolean[] visit = new boolean[noOfVertices];
-        for (int i = 1; i <= noOfVertices ; i++) {
-            if(visit[i-1]==false)
-                aux_breadthFirst(i,visit);
-        }
-    }
-    void aux_breadthFirst(int vNo, boolean[] visit){
-        Queue<Integer> queue = new LinkedList<Integer>();
-        queue.add(vNo);
-        visit[vNo-1]= true;
-        while (!queue.isEmpty()){
-            int x= queue.poll();
-            System.out.print(x+" -> ");
-            Iterator<Vertex> itr = edjList.get(x).iterator();
-            while (itr.hasNext()){
-               Vertex v = itr.next();
-                if(visit[v.vertexNo-1]==false) {
-                    queue.add(v.vertexNo);
-                    visit[v.vertexNo-1]= true;
-                }
-            }
-        }
-    }
-
-    void depthFirstTraversal(){
-        System.out.println();
-        boolean[] visit = new boolean[noOfVertices];
-        for (int i = 1; i <= noOfVertices ; i++) {
-            if(visit[i-1]==false)
-                aux_depthFirst(i,visit);
-        }
-    }
-
-    void aux_depthFirst(int vNo,boolean[] visit){
-        System.out.print(vNo+" -> ");
-        visit[vNo-1]=true;
-        Iterator<Vertex> itr = edjList.get(vNo).iterator();
-        while (itr.hasNext()){
-            Vertex x= itr.next();
-            if(visit[x.vertexNo-1]==false)
-                aux_depthFirst(x.vertexNo,visit);
-        }
-    }
-
-    public static void main(String[] args) {
-
-        GraphAdjacencyList graph = new GraphAdjacencyList(7);
-        graph.addEdge(1,3,10);
-        graph.addEdge(1,6,4);
-        graph.addEdge(6,4,6);
-        graph.addEdge(4,5,8);
-        graph.addEdge(4,2,12);
-        graph.addVertex(8);
-        graph.addEdge(5,8,7);
-
-        graph.displayGraph();
-        graph.breadthFirstTraversal();
-        graph.depthFirstTraversal();
-
-        System.out.println("Is edge there : "+ graph.areConnected(5,8));
-
-    }
-
 }
