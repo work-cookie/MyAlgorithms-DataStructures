@@ -18,4 +18,6 @@ public interface Graph {
     Iterator getVertices();
     boolean areConnected(Integer source, Integer dest);
     List getConnectedVertices(Integer source);
+    void breadthFirstTraversal();
+    void depthFirstTraversal();
 }

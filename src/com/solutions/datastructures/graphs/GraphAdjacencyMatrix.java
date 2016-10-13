@@ -1,9 +1,6 @@
 package com.solutions.datastructures.graphs;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by ADMIN-COOLUCAN on 10/12/2016.
@@ -117,5 +114,51 @@ public class GraphAdjacencyMatrix implements Graph{
                 list.add(i);
         }
         return list;
+    }
+
+    @Override
+    public void breadthFirstTraversal() {
+        boolean[] visited = new boolean[noOfVertices];
+        for (int i = 0; i < noOfVertices ; i++) {
+            if(visited[i]==false){
+                Queue<Integer> q = new LinkedList<Integer>();
+                q.add(i);
+                visited[i]=true;
+                while (!q.isEmpty()){
+                    Integer x = q.poll();
+                    System.out.print(x+"->");
+                    for (int j = 0; j < noOfVertices ; j++) {
+                        if(adjMat[x][j]==1 && visited[j]==false) {
+                            q.add(j);
+                            visited[j]=true;
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void depthFirstTraversal() {
+        boolean[] visited = new boolean[noOfVertices];
+        for (int i = 0; i < noOfVertices ; i++) {
+            if(visited[i]==false){
+                Stack<Integer> q = new Stack<Integer>();
+                q.add(i);
+                visited[i]=true;
+                while (!q.isEmpty()){
+                    Integer x = q.pop();
+                    visited[i]=true;
+                    System.out.print(x+"->");
+                    for (int j = 0; j < noOfVertices ; j++) {
+                        if(adjMat[x][j]==1 && visited[j]==false) {
+                            q.add(j);
+                            visited[j]=true;
+                        }
+                    }
+                }
+            }
+        }
     }
 }

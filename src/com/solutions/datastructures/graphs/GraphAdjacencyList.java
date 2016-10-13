@@ -135,4 +135,75 @@ public class GraphAdjacencyList implements Graph {
     public List getConnectedVertices(Integer source) {
         return adjList.get(source);
     }
+
+    @Override
+    public void breadthFirstTraversal() {
+        boolean[] visited = new boolean[noOfVertices];
+        for (int i = 0; i <noOfVertices ; i++) {
+            visited[i]=false;
+        }
+        for (int i = 0; i < noOfVertices ; i++) {
+            if(visited[i]==false){
+                Queue<Integer> q = new LinkedList<Integer>();
+                q.add(i);
+                visited[i]=true;
+                while (!q.isEmpty()){
+                    Integer x = q.poll();
+                    System.out.print(x+"->");
+                    Iterator<Vertex> itr = adjList.get(x).iterator();
+                    while (itr.hasNext()){
+                        Vertex v = itr.next();
+                        if(visited[v.vertexNo]==false){
+                            q.add(v.vertexNo);
+                            visited[v.vertexNo]=true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void depthFirstTraversal() {
+        boolean[] visited = new boolean[noOfVertices];
+        for (int i = 0; i < noOfVertices ; i++) {
+            if(visited[i]==false){
+                Stack<Integer> st = new Stack<Integer>();
+                st.add(i);
+                visited[i]=true;
+                while (!st.isEmpty()){
+                    Integer x = st.pop();
+                    System.out.print(x+"->");
+                    Iterator<Vertex> itr = adjList.get(x).iterator();
+                    while (itr.hasNext()){
+                        Vertex v = itr.next();
+                        if(visited[v.vertexNo]==false){
+                            st.add(v.vertexNo);
+                            visited[v.vertexNo]=true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void depthFirstRecursion() {
+        boolean[] visited = new boolean[noOfVertices];
+        for (int i = 0; i < noOfVertices; i++) {
+            if (visited[i] == false) {
+                auxDepthFirst(i, visited);
+            }
+        }
+    }
+    public void auxDepthFirst(int vertxNo,boolean[] visited){
+        System.out.print(vertxNo+"->");
+        visited[vertxNo]=true;
+        Iterator<Vertex> itr = adjList.get(vertxNo).iterator();
+        while (itr.hasNext()){
+            Vertex v= itr.next();
+            if(visited[v.vertexNo]==false){
+                auxDepthFirst(v.vertexNo,visited);
+            }
+        }
+    }
 }
