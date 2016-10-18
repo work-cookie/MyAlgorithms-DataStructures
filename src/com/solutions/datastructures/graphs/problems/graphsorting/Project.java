@@ -11,12 +11,24 @@ public class Project<T> {
     private ArrayList<Project<T>> children;
     private HashMap<T, Project<T>> map;
     private int noOfDependencies;
+    private State state;
+
+    public enum State {BLANK, PARTIAL , COMPLETED};
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
 
     Project(T name){
         this.name = name;
         children = new ArrayList<Project<T>>();
         map = new HashMap<T, Project<T>>();
         noOfDependencies=0;
+        state = State.BLANK;
     }
 
     public T getName(){return name;}
@@ -32,5 +44,10 @@ public class Project<T> {
         children.add(node);
         map.put(node.getName(),node);
         node.incrementDependencies();
+    }
+
+    @Override
+    public String toString() {
+        return getName().toString();
     }
 }
