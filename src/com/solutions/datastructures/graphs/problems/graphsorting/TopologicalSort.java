@@ -45,13 +45,30 @@ public class TopologicalSort {
         return endOfOrder;
     }
 
-    private Project[] DFStopSortProjects(ArrayList<Project> projects){
+    public Stack<Project> DFStopSortProjects(ArrayList<Project> projects){
         Stack<Project> stack = new Stack<Project>();
         for (Project proj: projects  ) {
             if(proj.getState()== Project.State.BLANK){
-
+                if(!doDFS(proj,stack))
+                    return null;
             }
         }
+        return stack;
+    }
 
+    private boolean doDFS(Project project, Stack<Project> st){
+        if(project.getState()== Project.State.PARTIAL)
+            return false;
+        if(project.getState()== Project.State.BLANK){
+            project.setState(Project.State.PARTIAL);
+            ArrayList<Project> children = project.getChildren();
+            for (Project proj: children ) {
+                if(!doDFS(proj,st))
+                    return false;
+            }
+            project.setState(Project.State.COMPLETED);
+            st.push(project);
+        }
+        return true;
     }
 }
