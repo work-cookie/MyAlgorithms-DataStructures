@@ -1,4 +1,4 @@
-package test.com.solutions.datastructures.queues.problems;
+package com.test.datastructures.queues.problems;
 
 import com.solutions.datastructures.queues.Queue;
 import com.solutions.datastructures.queues.problems.QueueUsingStacks;

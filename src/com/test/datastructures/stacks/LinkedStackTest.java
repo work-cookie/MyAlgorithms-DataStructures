@@ -1,4 +1,4 @@
-package test.com.solutions.datastructures.stacks;
+package com.test.datastructures.stacks;
 
 import com.solutions.datastructures.stacks.LinkedStack;
 import com.solutions.datastructures.stacks.Stack;

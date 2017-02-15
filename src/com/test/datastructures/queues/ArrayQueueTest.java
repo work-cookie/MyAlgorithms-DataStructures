@@ -1,4 +1,4 @@
-package test.com.solutions.datastructures.queues;
+package com.test.datastructures.queues;
 
 import com.solutions.datastructures.queues.ArrayQueue;
 import com.solutions.datastructures.queues.Queue;
@@ -7,6 +7,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.sun.xml.internal.ws.dump.LoggingDumpTube.Position.Before;
 import static org.junit.Assert.*;
 
 /**

@@ -1,4 +1,4 @@
-package test.com.solutions.datastructures.queues;
+package com.test.datastructures.queues;
 
 import com.solutions.datastructures.queues.LinkedQueue;
 import com.solutions.datastructures.queues.Queue;
